@@ -1,4 +1,4 @@
-#pragma once
+п»ї#pragma once
 #include <algorithm>
 #include <iostream>
 
@@ -7,9 +7,9 @@ namespace zabroda {
 	template<typename T>
 	struct vector_base {
 		using size_type = unsigned int;
-		T* elem; // начало выделенной памяти
-		T* space; // конец последовательности элементов
-		T* last; // конец выделенной памяти
+		T* elem; // РЅР°С‡Р°Р»Рѕ РІС‹РґРµР»РµРЅРЅРѕР№ РїР°РјСЏС‚Рё
+		T* space; // РєРѕРЅРµС† РїРѕСЃР»РµРґРѕРІР°С‚РµР»СЊРЅРѕСЃС‚Рё СЌР»РµРјРµРЅС‚РѕРІ
+		T* last; // РєРѕРЅРµС† РІС‹РґРµР»РµРЅРЅРѕР№ РїР°РјСЏС‚Рё
 
 		vector_base(size_type n, size_t s)
 			: elem{ static_cast<T*>( ::operator new(sizeof(T) * n) ) }, space{ elem + s }, last{ elem + n } {}
@@ -60,13 +60,13 @@ namespace zabroda {
 
 		size_type size() const { return vb.space - vb.elem; };
 		size_type capacity() const { return vb.last - vb.elem; };
-		void reserve(size_type n); // увеличение выделенной памяти ( увеличение capacity() )
+		void reserve(size_type n); // СѓРІРµР»РёС‡РµРЅРёРµ РІС‹РґРµР»РµРЅРЅРѕР№ РїР°РјСЏС‚Рё ( СѓРІРµР»РёС‡РµРЅРёРµ capacity() )
 
-		void resize(size_type n, const T& = {}); // изменить кол-во элементов
-		void push_back(const T&); // добавить элемент в конец вектора
+		void resize(size_type n, const T& = {}); // РёР·РјРµРЅРёС‚СЊ РєРѕР»-РІРѕ СЌР»РµРјРµРЅС‚РѕРІ
+		void push_back(const T&); // РґРѕР±Р°РІРёС‚СЊ СЌР»РµРјРµРЅС‚ РІ РєРѕРЅРµС† РІРµРєС‚РѕСЂР°
 		void insert(size_type n, const T& = {});
 		void remove(size_type n);
-		void clear() { resize(0); } // очистить вектор
+		void clear() { resize(0); } // РѕС‡РёСЃС‚РёС‚СЊ РІРµРєС‚РѕСЂ
 
 		T& operator [] (size_type i) { return vb.elem[i]; }
 		T operator [] (size_type i) const { return vb.elem[i]; }
@@ -105,16 +105,16 @@ namespace zabroda {
 		For p;
 		try {
 			for (p = beg; p != end; ++p)
-				new(static_cast<void*>(&*p)) T(x); // Конструируем *p с помощью копии элемента x
+				new(static_cast<void*>(&*p)) T(x); // РљРѕРЅСЃС‚СЂСѓРёСЂСѓРµРј *p СЃ РїРѕРјРѕС‰СЊСЋ РєРѕРїРёРё СЌР»РµРјРµРЅС‚Р° x
 		}
-		catch (...) { // Если не получилось сконструировать копию, то вызываем деструкторы всех элементов
+		catch (...) { // Р•СЃР»Рё РЅРµ РїРѕР»СѓС‡РёР»РѕСЃСЊ СЃРєРѕРЅСЃС‚СЂСѓРёСЂРѕРІР°С‚СЊ РєРѕРїРёСЋ, С‚Рѕ РІС‹Р·С‹РІР°РµРј РґРµСЃС‚СЂСѓРєС‚РѕСЂС‹ РІСЃРµС… СЌР»РµРјРµРЅС‚РѕРІ
 			for (For q = beg; q != p; ++q)
 				(&*q)->~T();
-			throw; // Перебрасываем исключение в функцию выше
+			throw; // РџРµСЂРµР±СЂР°СЃС‹РІР°РµРј РёСЃРєР»СЋС‡РµРЅРёРµ РІ С„СѓРЅРєС†РёСЋ РІС‹С€Рµ
 		}
 	}
 
-	// Самописнй аналог std::uninitialized_copy()
+	// РЎР°РјРѕРїРёСЃРЅР№ Р°РЅР°Р»РѕРі std::uninitialized_copy()
 	template<typename From, typename To>
 	void uninit_copy(From beg, From end, To dist)
 	{
@@ -124,10 +124,10 @@ namespace zabroda {
 			for (p = beg; p != end; ++p, ++dist)
 				new(const_cast<void*>(static_cast<const void*>(&*dist))) Value(*p);
 		}
-		catch (...) { // Если не получилось сконструировать копию, то вызываем деструкторы всех элементов
+		catch (...) { // Р•СЃР»Рё РЅРµ РїРѕР»СѓС‡РёР»РѕСЃСЊ СЃРєРѕРЅСЃС‚СЂСѓРёСЂРѕРІР°С‚СЊ РєРѕРїРёСЋ, С‚Рѕ РІС‹Р·С‹РІР°РµРј РґРµСЃС‚СЂСѓРєС‚РѕСЂС‹ РІСЃРµС… СЌР»РµРјРµРЅС‚РѕРІ
 			for (From q = beg; q != p; ++q)
 				(&(*q))->~Value();
-			throw; // Перебрасываем исключение в функцию выше
+			throw; // РџРµСЂРµР±СЂР°СЃС‹РІР°РµРј РёСЃРєР»СЋС‡РµРЅРёРµ РІ С„СѓРЅРєС†РёСЋ РІС‹С€Рµ
 		}
 	}
 
@@ -173,13 +173,13 @@ namespace zabroda {
 			return *this;
 		}
 
-		if (this == &vec) return *this; // Оптимизация самоприсвоения (vec = vec)
+		if (this == &vec) return *this; // РћРїС‚РёРјРёР·Р°С†РёСЏ СЃР°РјРѕРїСЂРёСЃРІРѕРµРЅРёСЏ (vec = vec)
 
 		size_type sz = size();
 		size_type vecsz = vec.size();
 		if (vecsz <= sz) {
 			std::copy(vec.begin(), vec.begin() + vecsz, vb.elem);
-			for (T* p = vb.elem + vecsz; p != vb.space; ++p) // уничтожаем неиспользующуюся выделенную память
+			for (T* p = vb.elem + vecsz; p != vb.space; ++p) // СѓРЅРёС‡С‚РѕР¶Р°РµРј РЅРµРёСЃРїРѕР»СЊР·СѓСЋС‰СѓСЋСЃСЏ РІС‹РґРµР»РµРЅРЅСѓСЋ РїР°РјСЏС‚СЊ
 				p->~T();
 		}
 		else {
@@ -209,7 +209,7 @@ namespace zabroda {
 	template<typename T>
 	inline void vector<T>::reserve(size_type n)
 	{
-		if (n <= capacity()) return; // В этом случае нам хватает места
+		if (n <= capacity()) return; // Р’ СЌС‚РѕРј СЃР»СѓС‡Р°Рµ РЅР°Рј С…РІР°С‚Р°РµС‚ РјРµСЃС‚Р°
 		vector_base<T> b(n, size());
 		uninit_move(vb.elem, vb.elem + size(), b.elem);
 		std::swap(vb, b);
@@ -239,8 +239,8 @@ namespace zabroda {
 	{
 		if (capacity() == size())
 			reserve(size() ? 2 * size() : 8);
-		new (static_cast<void*>(&vb.elem[size()])) T(val); // конструирую объект в конце
-		++vb.space; // увеличиваю кол-во сконструированных элементов на 1
+		new (static_cast<void*>(&vb.elem[size()])) T(val); // РєРѕРЅСЃС‚СЂСѓРёСЂСѓСЋ РѕР±СЉРµРєС‚ РІ РєРѕРЅС†Рµ
+		++vb.space; // СѓРІРµР»РёС‡РёРІР°СЋ РєРѕР»-РІРѕ СЃРєРѕРЅСЃС‚СЂСѓРёСЂРѕРІР°РЅРЅС‹С… СЌР»РµРјРµРЅС‚РѕРІ РЅР° 1
 	}
 
 	template<typename T>
